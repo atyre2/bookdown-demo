@@ -13,9 +13,23 @@ Reference a figure by its code chunk label with the `fig:` prefix, e.g., see Fig
 
 ```{r nice-tab, tidy=FALSE}
 knitr::kable(
-  head(iris, 20), caption = 'Here is a nice table!',
+  head(iris, 20), caption = 'Here is a nice table!', 
   booktabs = TRUE
 )
 ```
 
 You can write citations, too. For example, we are using the **bookdown** package [@R-bookdown] in this sample book, which was built on top of R Markdown and **knitr** [@xie2015].
+
+I would like to be able to make automatically numbered table captions using package **huxtable**, which allows for spanning columns/rows and other nice features. It is very easy to use. I added the code chunk and following text to `01-intro.Rmd` to the [rstudio/bookdown-demo](https://github.com/rstudio/bookdown-demo) repository (after forking and cloning, of course!)
+
+```{r nice-tab2, results='asis', tidy=FALSE}
+library(huxtable)
+ht <- hux(head(iris, 5), add_colnames = TRUE)
+caption(ht) <- '(\\#tab:nice-tab2) Here is another nice table!'
+ht
+```
+
+I want to be able to generate crossreferences and numbered captions for tables (Table \@ref(tab:nice-tab2)), just as I can for `knitr::kable()`. [According to the directions in the bookdown book](https://bookdown.org/yihui/bookdown/tables.html), I should be able to do this if I follow certain criteria. So far it works for pdf output, but not for the html output. TIL: there is no need to put "Table" anywhere in the caption string, **bookdown** replaces the whole tag with "Table crossrefnumber:".  
+
+I have confirmed that the html produced by **huxtable** uses the `<caption></caption>` tag by doing `print_html(ht)`. I believe I'm using the correct form for the label (and it works for pdf, so yes).  
+
